@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="batch_report_view_pivot_base" model="ir.ui.view">
+        <field name="name">batch.count.report.pivot</field>
+        <field name="model">logic.base.batch</field>
+        <field name="priority">60</field>
+        <field name="arch" type="xml">
+            <pivot string="Batch Analysis" sample="1">
+                <field name="create_date" interval="month" type="col"/>
+                <field name="tot_seats" type="row"/>
+                <!--                    <field name="admission_fee" type="measure"/>-->
+            </pivot>
+        </field>
+    </record>
+    <record id="res_district_tree_base" model="ir.ui.view">
+        <field name="name">res.batch.tree</field>
+        <field name="model">logic.base.batch</field>
+        <field name="arch" type="xml">
+            <tree string="Batch">
+                <!--                 <field name="district_code"/> -->
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="company_id"/>
+                <!--                 <field name="b_nm"/> -->
+                <!--                 <field name="location"/> -->
+                <field name="tot_seats"/>
+                <field name="available_seats"/>
+                <field name="product_id" required="1"/>
+                <field name="created_id"/>
+                <field name="approve_date"/>
+                <field name="state"/>
+
+                <!--                 <field name="state_nm_id"/> -->
+            </tree>
+        </field>
+    </record>
+    <record id="batch_form_base" model="ir.ui.view">
+        <field name="name">res.batch.form</field>
+        <field name="model">logic.base.batch</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_approve" string="Approve" class="btn-primary" states="draft"
+                            type="object" groups="logic_base.academic_head_batch"/>
+                     <button name="manager_approve" string="Approve" class="btn-primary" states="marketing"
+                            type="object" groups="logic_base.manager_batch"/>
+                     <button name="accounts_approve" string="Approve" class="btn-primary" states="accounts"
+                            type="object" groups="logic_base.accounts_batch"/>
+                    <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible': [('state','in', ['done','cancel'])]}"/>
+                    <!--                    <button name="action_allocation" string="Student Allocation" class="btn-primary" states="active"-->
+                    <!--                            type="object"/>-->
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_class_view" type="object" class="oe_stat_button" icon="fa-star">
+                            <div class="o_stat_info">
+                                <field name="admission_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Class</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div>
+                        <group>
+                            <group>
+                                <field name="class_teacher_id" groups="logic_base.academic_head_batch"/>
+                                <field name="fee_collection_id" groups="logic_base.accounts_batch"/>
+                                <field name="name" required="1"/>
+                                <field name="code"/>
+                                <field name="product_id" required="1"/>
+                                <field name="created_id"/>
+                                <field name="create_date"/>
+                                <field name="approve_date"/>
+                            </group>
+                            <group>
+                                <field name="company_id"/>
+                                <field name="tot_seats"/>
+<!--                                <field name="available_seats"/>-->
+                                <field name="from_date"/>
+                                <field name="to_date"/>
+                                <field name="active_state"/>
+                                <field name="make_visible_head_batch" invisible="1"/>
+                                <field name="make_visible_accounts_batch" invisible="1"/>
+                                <field name="make_visible_manager_batch" invisible="1"/>
+                            </group>
+                        </group>
+                    </div>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="res_batch_action_logic_base" model="ir.actions.act_window">
+        <field name="name">Batches</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">logic.base.batch</field>
+        <field name="view_mode">kanban,tree,form,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create...</p>
+        </field>
+    </record>
+    <menuitem id="batch_base_logic" name="Batch" action="res_batch_action_logic_base" parent="menu_students_base"
+              sequence="2"/>
+</odoo>

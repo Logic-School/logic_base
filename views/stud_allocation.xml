@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="classroom_allocate_student_view_id" model="ir.ui.view">
+            <field name="name">classroom.allocate.student.view</field>
+            <field name="model">class.base.allocate.student</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="student_ids" options="{'no_create': True}" widget="many2many_tags"/>
+                                <field name="class_id" domain="[('batch_id', '=', batch_id)]"/>
+                            </group>
+                            <group>
+                                <field name="batch_id"/>
+                                <!--                                <field name="admission_ids" options="{'no_create': True}" widget="many2many_tags"/>-->
+                            </group>
+                        </group>
+                        <footer>
+                            <button name="action_allocation" string="Allocate" type="object"
+                                    class="btn-primary"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="classroom_allocate_student_action_id" model="ir.actions.act_window">
+            <field name="name">Conversion Ratio Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">class.base.allocate.student</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="classroom_allocate_student_view_id"/>
+            <field name="target">new</field>
+        </record>
+        <record id="classroom_reallocate_base_student_view" model="ir.ui.view">
+            <field name="name">classroom.reallocate.student.view</field>
+            <field name="model">classroom.base.reallocate.student</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="student_ids" options="{'no_create': True}" widget="many2many_tags"/>
+                                <field name="batch_id"/>
+                            </group>
+                            <group>
+                                <field name="class_id"/>
+<!--                                <field name="to_class_id"/>-->
+                            </group>
+                        </group>
+                        <footer>
+                            <button name="classroom_reallocate_student_action" string="Reallocate" type="object"
+                                    class="btn-primary"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="classroom__re_student_action_id" model="ir.actions.act_window">
+            <field name="name">Conversion Ratio Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">classroom.base.reallocate.student</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="classroom_reallocate_base_student_view"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

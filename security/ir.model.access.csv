@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_student,access_details,model_logic_students,base.group_user,1,1,1,1
+access_batch,access_details,model_logic_base_batch,base.group_user,1,1,1,1
+access_class,access_details_class,model_logic_base_class,base.group_user,1,1,1,1
+access_class_students,access_details_class,model_student_base_lines,base.group_user,1,1,1,1
+access_class_lines,access_details_class,model_class_base_allocate_student,base.group_user,1,1,1,1
+access_re_lines,access_details_class,model_classroom_base_reallocate_student,base.group_user,1,1,1,1
+access_courses,access_course,model_logic_base_courses,base.group_user,1,1,1,1
+
+
+
+
+

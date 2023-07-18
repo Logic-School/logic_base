@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_course_tree_base" model="ir.ui.view">
+        <field name="name">res.course.tree</field>
+        <field name="model">logic.base.courses</field>
+        <field name="arch" type="xml">
+            <tree string="Batch">
+                <!--                 <field name="district_code"/> -->
+                <field name="name"/>
+                <field name="course_fee"/>
+                <field name="state"/>
+
+                <!--                 <field name="state_nm_id"/> -->
+            </tree>
+        </field>
+    </record>
+    <record id="course_form_base" model="ir.ui.view">
+        <field name="name">res.course.form</field>
+        <field name="model">logic.base.courses</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                    <button id="create_course" name="create_course" string="Create" states="draft" class="btn-primary" type="object"/>
+                    <button id="return_menu" name="return_menu" string="Return" states="done" type="object"/>
+
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="course_fee" widget="monetary"/>
+                            <field name="type"/>
+                            <field name="board_registration"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="res_course_action_logic_base" model="ir.actions.act_window">
+        <field name="name">Courses</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">logic.base.courses</field>
+        <field name="view_mode">kanban,tree,form,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create...</p>
+        </field>
+    </record>
+    <menuitem id="course_base_logic" name="Course" action="res_course_action_logic_base" parent="menu_students_base"
+              sequence="5"/>
+</odoo>

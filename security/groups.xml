@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.module.category" id="module_batch_management">
+            <field name="name">Batch</field>
+            <field name="sequence">20</field>
+            <field name="visible" eval="0"/>
+        </record>
+        <record id="manager_batch" model="res.groups">
+            <field name="name">Marketing Manager</field>
+            <field name="category_id" ref="module_batch_management"/>
+        </record>
+        <record id="accounts_batch" model="res.groups">
+            <field name="name">Accounts</field>
+            <field name="category_id" ref="module_batch_management"/>
+        </record>
+        <record id="academic_head_batch" model="res.groups">
+            <field name="name">Academic Head</field>
+            <field name="category_id" ref="module_batch_management"/>
+        </record>
+
+    </data>
+</odoo>

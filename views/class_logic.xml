@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--    <record id="class_report_view_pivot" model="ir.ui.view">-->
+    <!--        <field name="name">class.count.report.pivot</field>-->
+    <!--        <field name="model">res.base.class</field>-->
+    <!--        <field name="priority">60</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <pivot string="class Analysis" sample="1">-->
+    <!--                <field name="create_date" interval="month" type="col"/>-->
+    <!--                <field name="batch_id" type="row"/>-->
+    <!--                &lt;!&ndash;                    <field name="admission_fee" type="measure"/>&ndash;&gt;-->
+    <!--            </pivot>-->
+    <!--        </field>-->
+    <!--    </record>-->
+    <record id="class_master_tree" model="ir.ui.view">
+        <field name="name">res.class.tree</field>
+        <field name="model">logic.base.class</field>
+        <field name="arch" type="xml">
+            <tree>
+                <!--                <field name="date" invisible="1"/>-->
+                <!--                <field name="batch_id"/>-->
+                <field name="name"/>
+                <!--                <field name="code"/>-->
+                <!--                <field name="tutor_id"/>-->
+                <!--                <field name="start_date"/>-->
+                <!--                <field name="end_date"/>-->
+                <!--                <field name="total_seats"/>-->
+                <!--                <field name="available_seats"/>-->
+                <!--&lt;!&ndash;                <field name="state"/>&ndash;&gt;-->
+                <!--                <field name="balance"/>-->
+            </tree>
+        </field>
+    </record>
+    <record id="class_master_form" model="ir.ui.view">
+        <field name="name">res.class.form</field>
+        <field name="model">logic.base.class</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+<!--                    <button id="button_submit" name="action_submit" string="Submit" class="btn-primary" type="object"/>-->
+                    <!--                     attrs="{'invisible': [('state', '!=', 'submit')]}"/>-->
+                    <button id="button_approve" name="action_approve" string="Approve" class="btn-primary"
+                            states="draft"
+                            type="object"/>
+                    <button id="rfq_approve" name="rfq_approve" string="Request For Approval" class="btn-primary"
+                            states="draft"
+                            type="object"/>
+                    <button name="action_allocation" string="Student Allocation" class="btn-primary" states="active"
+                            type="object"/>
+                    <button name="action_reallocate" string="Reallocation" class="btn-primary" states="active"
+                            type="object"/>
+                    <field name="state" widget="statusbar"/>
+
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_students" type="object" class="oe_stat_button" icon="fa-star">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Students</span>
+                            </div>
+                        </button>
+                    </div>
+<!--                    <div class="oe_title">-->
+<!--                        <h1>-->
+<!--                            <field name="reference" readonly="1"/>-->
+<!--                        </h1>-->
+<!--                    </div>-->
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id" readonly="1" invisible="1"/>
+                            <field name="date" invisible="1"/>
+                            <field name="batch_id" domain="[('company_id', '=', company_id)]"/>
+                            <field name="coordinator_id"/>
+                            <field name="approve_id"/>
+                            <field name="tutor_id"/>
+                            <field name="create_date" invisible="1"/>
+                            <field name="approve_date" invisible="1"/>
+                        </group>
+                        <group>
+
+                            <field name="code"/>
+                            <field name="available_seats"/>
+                            <field name="total_seats"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="batch_check_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Remarks">
+                            <group>
+                                <field name="note"/>
+                            </group>
+                        </page>
+                        <page string="Student Details" name="Students" invisible="0">
+                            <field name="line_base_ids">
+                                <tree editable="bottom">
+                                    <field name="student_id" readonly="1"/>
+                                    <field name="batch_id" invisible="1"/>
+<!--                                    <field name="admission_id" readonly="1"/>-->
+<!--                                    <field name="pending_fee"/>-->
+                                    <!--                                    <field name="state" readonly="1"/>-->
+                                </tree>
+                            </field>
+<!--                            <group class="oe_total_footer oe_right" name="payment_total">-->
+<!--                                <h1>-->
+<!--                                    <group>-->
+<!--&lt;!&ndash;                                        <field name="balance" readonly="1" force_save="1"/>&ndash;&gt;-->
+<!--                                    </group>-->
+<!--                                </h1>-->
+<!--                            </group>-->
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="res_class_action" model="ir.actions.act_window">
+        <field name="name">Class master</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">logic.base.class</field>
+        <field name="view_mode">kanban,tree,form,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_smiling_face">Create...</p>
+        </field>
+    </record>
+
+    <!--    <record id="res_partner_action" model="ir.actions.act_window">-->
+    <!--        <field name="name">Student master</field>-->
+    <!--        <field name="type">ir.actions.act_window</field>-->
+    <!--        <field name="res_model">res.partner</field>-->
+    <!--        <field name="view_mode">tree,form</field>-->
+    <!--        <field name="domain">[('contact_type', '=', 'student')]</field>-->
+    <!--        <field name="help" type="html">-->
+    <!--            <p class="o_view_smiling_face">Create...</p>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+    <menuitem id="class_base_master" name="Class" action="res_class_action" parent="menu_students_base"
+              sequence="5"/>
+
+</odoo>
