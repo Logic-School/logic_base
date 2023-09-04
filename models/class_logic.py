@@ -1,8 +1,9 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError,UserError
 # from datetime import datetime
 from datetime import timedelta
-from datetime import date, timezone
+from datetime import date, timezone,datetime
+
 
 
 # from dateutil.relativedelta import relativedelta
@@ -18,6 +19,7 @@ class ClassMaster(models.Model):
     date = fields.Date(string="Date", index=True)
     batch_id = fields.Many2one('logic.base.batch', string="Batch Name")
     line_base_ids = fields.One2many('student.base.lines', 'class_base_id', string='Fee Details')
+    student_ids = fields.One2many('logic.students','allocated_class_id',domain="[('batch_id','=',batch_id),('batch_id','!=',False),('class_id','=',False)]")
     name = fields.Char(string="Class Room", index=True)
     code = fields.Char(string="Code", index=True)
     note = fields.Text(string='Notes')
@@ -28,6 +30,8 @@ class ClassMaster(models.Model):
     start_date = fields.Date(string="Start Date")
     end_date = fields.Date(string="End Date")
     coordinator_id = fields.Many2one('res.users', string="Academic Cordinator", default=lambda self: self.env.user.id)
+    # @api.depends('coordinator_id')
+
     approve_id = fields.Many2one('res.users', string="Approved By", default=lambda self: self.env.user.id, readonly="1",
                                  tracking=True)
     tutor_id = fields.Many2one('res.users', string="Faculty")
@@ -69,7 +73,7 @@ class ClassMaster(models.Model):
             'name': _('Students'),
             'view_mode': 'kanban,tree,form',
             # 'view_mode': 'tree,form',
-            'domain': [('class_id', '=', self.id)],
+            'domain': [('allocated_class_id', '=', self.id)],
             'res_model': 'logic.students',
             'type': 'ir.actions.act_window',
             'context': {'create': False, 'active_test': False},
@@ -92,6 +96,27 @@ class ClassMaster(models.Model):
 
     def action_allocation(self):
         print('te')
+        # self = self.with_context({'coordinator_id':str(self.coordinator_id.id)})
+        # self.asdas()
+
+
+        # employees = self.env['hr.employee'].search([])
+        # vals = []
+        # for employee in employees:
+        #     self = self.with_context({'employee_id':employee.id,'default_employee_id':employee.id})
+        #     allocation_obj = self.env['hr.leave.allocation'].create({
+        #         'name':'sdfsdfs',
+        #         'holiday_type': 'employee',
+        #         'employee_id': employee.id,
+        #         'holiday_status_id': self.env['hr.leave.type'].search([('name','=','Sick Time Off')],limit=1).id
+        #         # 'date_allocation': datetime.today(),
+                
+        #     })
+            
+        #     vals.append(allocation_obj.name_get())
+        # raise UserError(vals)
+
+
         crm = self.env['classroom.allocate.student'].search([('class_id', '=', self.id)])
         return {
             'name': _('Allocation'),
@@ -110,19 +135,20 @@ class ClassMaster(models.Model):
     #
 
     def action_reallocate(self):
-        print("k")
-        # return {
-        #     'name': _('Reallocation'),
-        #     'view_mode': 'form',
-        #     'res_model': 'classroom.base.reallocate.student',
-        #     'type': 'ir.actions.act_window',
-        #     'target': 'new',
-        #     "context": {
-        #         'default_class_id': self.id,
-        #         'default_batch_id': self.batch_id.id,
-        #         # 'default_student_ids': self.student_id.id,
-        #     },
-        # }
+        return {
+            'name': _('Reallocation'),
+            'view_mode': 'form',
+            'res_model': 'class.base.reallocate.student',
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+            "context": {
+                'default_class_id': self.id,
+                'default_batch_id': self.batch_id.id,
+                # 'default_student_ids': self.student_id.id,
+                # 'default_revenue': self.expected_revenue,
+                # 'default_no_person': self.no_of_persons_package,
+            },
+        }
 
 
 class StudentLines(models.Model):
@@ -145,38 +171,40 @@ class StudentLines(models.Model):
     #     for i in self:
     #         if i.admission_id:
     #             i.pending_fee = i.admission_id.balance
+    def test_btn(self):
+        self.unlink()
 
 
-class ReallocateBase(models.TransientModel):
-    _name = "classroom.base.reallocate.student"
+# class ReallocateBase(models.TransientModel):
+#     _name = "classroom.base.reallocate.student"
 
-    batch_id = fields.Many2one('logic.base.batch', string="Batch")
-    student_ids = fields.Many2many('logic.students', string="Students")
-    # admission_ids = fields.Many2many('res.admission', string="Admision")
-    class_id = fields.Many2one('logic.base.class', string="Class")
+#     batch_id = fields.Many2one('logic.base.batch', string="Batch")
+#     student_ids = fields.Many2many('logic.students', string="Students")
+#     # admission_ids = fields.Many2many('res.admission', string="Admision")
+#     class_id = fields.Many2one('logic.base.class', string="Class")
 
-    @api.onchange('class_id')
-    def onchange_class_id(self):
-        print('nnnnn', self.class_id)
-        if self.class_id:
-            for classes in self.class_id:
-                reallocation_list = []
-                for allocation in classes.line_base_ids:
-                    reallocation_list.append(allocation.student_id.id)
-                    print(reallocation_list)
-                return {'domain': {'student_ids': [('id', 'in', reallocation_list)]}}
+#     @api.onchange('class_id')
+#     def onchange_class_id(self):
+#         print('nnnnn', self.class_id)
+#         if self.class_id:
+#             for classes in self.class_id:
+#                 reallocation_list = []
+#                 for allocation in classes.line_base_ids:
+#                     reallocation_list.append(allocation.student_id.id)
+#                     print(reallocation_list)
+#                 return {'domain': {'student_ids': [('id', 'in', reallocation_list)]}}
 
-    def classroom_reallocate_student_action(self):
-        move_id = self.to_class_id
-        from_id = self.class_id
-        for student in self.student_ids:
-            move_id.write({
-                'line_ids': [(0, 0, {
-                    'student_id': student.id
-                })]
-            })
-            from_id = self.class_id
-            for student in self.student_ids:
-                for x in from_id.line_ids:
-                    if x.student_id.id == student.id:
-                        x.unlink()
+#     def classroom_reallocate_student_action(self):
+#         move_id = self.to_class_id
+#         from_id = self.class_id
+#         for student in self.student_ids:
+#             move_id.write({
+#                 'line_ids': [(0, 0, {
+#                     'student_id': student.id
+#                 })]
+#             })
+#             from_id = self.class_id
+#             for student in self.student_ids:
+#                 for x in from_id.line_ids:
+#                     if x.student_id.id == student.id:
+#                         x.unlink()
