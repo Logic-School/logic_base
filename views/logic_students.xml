@@ -47,6 +47,7 @@
                             <field name="student_id"/>
                             <field name="aadhar_number"/>
                             <field name="batch_id"/>
+                            <field name="allocated_class_id"/>
                             <field name="stud_id" invisible="1"/>
                             <field name="related_partner"/>
 <!--                            <field name="adm_no_id"/>-->

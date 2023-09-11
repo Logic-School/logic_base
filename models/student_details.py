@@ -34,7 +34,7 @@ class LogicStudents(models.Model):
     status = fields.Selection([('draft', 'Draft'), ('linked', 'Linked')], default='draft', string='Status')
     related_partner = fields.Many2one('res.partner', string='Related Partner')
     class_id = fields.Integer(string='Class')
-    allocated_class_id = fields.Many2one('logic.base.class')
+    allocated_class_id = fields.Many2one('logic.base.class', string="Class")
     adm_id = fields.Integer(string='Admission ID')
     allocated_class_ids = fields.Many2many('logic.base.class')
 
@@ -83,7 +83,7 @@ class LogicStudents(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Class',
                 'res_model': 'logic.base.class',
-                'view_mode': 'tree,form',
+                'view_mode': 'tree',
                 'target': 'current',
                 'domain': [('batch_id.id', '=', self.batch_id.id)]
             }
